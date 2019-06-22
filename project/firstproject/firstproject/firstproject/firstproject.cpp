@@ -177,6 +177,9 @@ int main()
 	ourShader.setInt("texture1",0);
 	ourShader.setInt("texture2", 1);
 	glEnable(GL_DEPTH_TEST);
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	ourShader.setMat4("projection",projection);
 	//渲染循环
 	while (!glfwWindowShouldClose(window))
 	{
@@ -194,13 +197,12 @@ int main()
 
 		// create transformations
 		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		
-
-		ourShader.setMat4("projection",projection);
+		float radius = 10.0f;
+		float camX = sin(glfwGetTime())*radius;
+		float camZ = cos(glfwGetTime())*radius;
+		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		ourShader.setMat4("view",view);
+		
 
 		glBindVertexArray(VAO);
 		for (unsigned int i = 0; i < 10; i++)
