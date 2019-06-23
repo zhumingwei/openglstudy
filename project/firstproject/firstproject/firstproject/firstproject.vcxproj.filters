@@ -21,6 +21,9 @@
     <ClInclude Include="shader_s.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="firstproject.cpp">

@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="shader_s.h" />
+    <ClInclude Include="camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\glad\src\glad.c" />
