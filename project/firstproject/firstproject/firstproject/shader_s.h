@@ -37,7 +37,7 @@ public:
 		}
 		catch (const std::exception&)
 		{
-			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ :" << vertexPath << "or" << fragmentPath << std::endl;
 		}
 
 		const char* vShaderCode = vertexCode.c_str();
@@ -46,18 +46,18 @@ public:
 		vertex = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertex, 1, &vShaderCode, NULL);
 		glCompileShader(vertex);
-		checkCompileError(vertex, "VERTEX");
+		checkCompileError(vertex, "VERTEX" , vertexPath);
 
 		fragment = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fragment, 1, &fShaderCode, NULL);
 		glCompileShader(fragment);
-		checkCompileError(fragment, "FRAGMENT");
+		checkCompileError(fragment, "FRAGMENT", fragmentPath);
 
 		ID = glCreateProgram();
 		glAttachShader(ID, vertex);
 		glAttachShader(ID, fragment);
 		glLinkProgram(ID);
-		checkCompileError(ID, "PROGRAM");
+		checkCompileError(ID, "PROGRAM", "program");
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
 	}
@@ -115,7 +115,7 @@ public:
 		glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 	}
 private :
-	void checkCompileError(unsigned int shader,std::string type) {
+	void checkCompileError(unsigned int shader,std::string type, const char* ext) {
 		int success;
 		char infoLog[1024];
 		if (type == "VERTEX" || type== "FRAGMENT")
@@ -124,7 +124,7 @@ private :
 			if (!success)
 			{
 				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << ext << std::endl;
 			}
 		}
 		else if (type== "PROGRAM") {
@@ -132,7 +132,7 @@ private :
 			if (!success)
 			{
 				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << ext << std::endl;
 			}
 		}
 		else {
