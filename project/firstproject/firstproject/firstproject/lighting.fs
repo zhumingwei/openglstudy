@@ -8,7 +8,10 @@ struct Material {
 };  
 struct Light {
     vec3 position;
-	//vec3 direction;
+	vec3 direction;
+	float cutOff;
+	float outerCutOff;
+
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -26,6 +29,11 @@ uniform Material material;
 uniform Light light;
 void main()
 {
+
+	vec3 lightDir = normalize(light.position - FragPos);
+	float theta = dot(lightDir, normalize(-light.direction));
+
+	if(theta > light.cutOff){
 	//ambient ª∑æ≥π‚’’
 	  vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 	
@@ -46,10 +54,15 @@ void main()
 	float distance = length(light.position - FragPos);
 	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
 
-	ambient  *= attenuation;  
+	//ambient  *= attenuation;  
     diffuse   *= attenuation;
     specular *= attenuation;
 
     vec3 result = ambient + diffuse + specular;
     FragColor = vec4(result, 1.0);
+	}
+	else 
+	{
+		FragColor = vec4(light.ambient * texture(material.diffuse,TexCoords).rgb,1.0);
+	}
 }
