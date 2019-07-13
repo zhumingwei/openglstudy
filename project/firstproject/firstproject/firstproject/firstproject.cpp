@@ -149,8 +149,10 @@ int main()
 	glEnableVertexAttribArray(0);
 
 	unsigned int diffuseMap = loadTexture("container2.png");
+	unsigned int specularMap = loadTexture("container2_specular.png");
 	lightingShader.use();
 	lightingShader.setInt("material.diffuse", 0);
+	lightingShader.setInt("material.specular", 1);
 
 	//渲染循环
 	while (!glfwWindowShouldClose(window))
@@ -174,7 +176,6 @@ int main()
 		lightingShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
 		//material properties
-		lightingShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 		lightingShader.setFloat("material.shininess", 64.0f);
 		
 		//view/projection transformations
@@ -189,7 +190,9 @@ int main()
 		//bind diffuse map
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D,diffuseMap);
-
+		//bind specular map
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D,specularMap);
 
 		glBindVertexArray(cubeVAO);
 		glDrawArrays(GL_TRIANGLES, 0 , 36);
