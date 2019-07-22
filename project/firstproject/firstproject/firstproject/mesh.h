@@ -23,66 +23,81 @@ struct Vertex
 	glm::vec3 Normal;
 	//texCoords
 	glm::vec2 TexCoords;
-	//tangent
+	//tangent åˆ‡çº¿
 	glm::vec3 Tangent;
-	//bitangent;
-	glm::vec3 BiTangent;
-	
+	//bitangent å‰¯åˆ‡çº¿
+	glm::vec3 Bitangent;
 };
 
-struct Texture {
+struct Texture
+{
 	unsigned int id;
 	string type;
+	string path;
 };
 
 struct Mesh
 {
 public:
-	/*Íø¸ñÊı¾İ*/
+	/*ç½‘æ ¼æ•°æ®*/
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
-	/*º¯Êı*/
-	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures) {
+	unsigned VAO;
+	/*å‡½æ•°*/
+	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+	{
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
 		setupMesh();
 	}
-	void Draw(Shader shader) {
+	void Draw(Shader shader)
+	{
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
+		unsigned int normalNr = 1;
+		unsigned int heightNr = 1;
+
 		for (unsigned i = 0; i < textures.size(); i++)
 		{
-			glActiveTexture(GL_TEXTURE0 + i);//ÔÚ°ó¶¨Ö®Ç°¼¤»îÏàÓ¦µÄÎÆÀíµ¥Ôª
-			//»ñÈ¡ÎÆÀíĞòºÅ (diffuse_textureN ÖĞµÄ N)
+			glActiveTexture(GL_TEXTURE0 + i); //åœ¨ç»‘å®šä¹‹å‰æ¿€æ´»ç›¸åº”çš„çº¹ç†å•å…ƒ
+			//è·å–çº¹ç†åºå· (diffuse_textureN ä¸­çš„ N)
 			string number;
 			string name = textures[i].type;
 			if (name == "texture_diffuse")
 			{
-				number = std::to_string(diffuseNr ++);
+				number = std::to_string(diffuseNr++);
 			}
 			else if (name == "texture_specular")
-				number = std::to_string(specularNr ++);
+				number = std::to_string(specularNr++);
+			else if (name == "texture_normal")
+				number = std::to_string(normalNr++); // transfer unsigned int to stream
+			else if (name == "texture_height")
+				number = std::to_string(heightNr++); // transfer unsigned int to stream
 
-			shader.setFloat(("material." + name + number).c_str, i);
+			glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 		glActiveTexture(GL_TEXTURE0);
-		//»æÖÆÍøÂ·
+		//ç»˜åˆ¶ç½‘è·¯
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
+
+		glActiveTexture(GL_TEXTURE0);
 	}
+
 private:
-	/*äÖÈ¾Êı¾İ*/
-	unsigned int VAO, VBO, EBO;
-	/*º¯Êı*/
-	void setupMesh() {
+	/*æ¸²æŸ“æ•°æ®*/
+	unsigned int VBO, EBO;
+	/*å‡½æ•°*/
+	void setupMesh()
+	{
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
-		
+
 		glBindVertexArray(VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -90,21 +105,24 @@ private:
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-		//¶¥µãÎ»ÖÃ
+		//é¡¶ç‚¹ä½ç½®
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-		//¶¥µã·¨Ïß
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
+		//é¡¶ç‚¹æ³•çº¿
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-		//¶¥µãÎÆÀí×ø±ê
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Normal));
+		//é¡¶ç‚¹çº¹ç†åæ ‡
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, TexCoords));
+		// vertex tangent
+		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+		// vertex bitangent
+		glEnableVertexAttribArray(4);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 		glBindVertexArray(0);
 	}
 };
-
-
-
 
 #endif // !MESH_H

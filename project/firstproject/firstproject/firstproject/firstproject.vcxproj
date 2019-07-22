@@ -77,8 +77,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\project\opengl\openglstudy\glm-0.9.9.5\glm;E:\project\opengl\openglstudy\stb;E:\project\opengl\openglstudy\glfw-3.3.bin.WIN64\glfw-3.3.bin.WIN64\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\project\opengl\openglstudy\stb;E:\project\opengl\openglstudy\glfw-3.3.bin.WIN64\glfw-3.3.bin.WIN64\lib-vc2017;$(LibraryPath)</LibraryPath>
+    <IncludePath>E:\project\opengl\openglstudy\assimp-4.1.0\build\include;E:\project\opengl\openglstudy\assimp-4.1.0\include;E:\project\opengl\openglstudy\glm-0.9.9.5\glm;E:\project\opengl\openglstudy\stb;E:\project\opengl\openglstudy\glfw-3.3.bin.WIN64\glfw-3.3.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>E:\project\opengl\openglstudy\assimp-4.1.0\build\code\Debug;E:\project\opengl\openglstudy\stb;E:\project\opengl\openglstudy\glfw-3.3.bin.WIN64\glfw-3.3.bin.WIN64\lib-vc2017;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -116,7 +116,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
